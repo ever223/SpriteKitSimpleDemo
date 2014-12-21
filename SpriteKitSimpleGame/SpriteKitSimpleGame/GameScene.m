@@ -50,10 +50,13 @@ static inline CGPoint rwNormalize(CGPoint a) {
 - (id) initWithSize:(CGSize)size {
     if (self = [super initWithSize:size]) {
         NSLog(@"Size:%@", NSStringFromCGSize(size));
+        //场景背景颜色
         self.backgroundColor = [SKColor colorWithRed:0.0 green:1.0 blue:1.0 alpha:1.0];
+        //初始化忍者对象
         self.player = [SKSpriteNode spriteNodeWithImageNamed:@"player"];
         NSLog(@"player's size : %@", NSStringFromCGSize(self.player.size));
         self.player.position = CGPointMake(self.player.size.width / 2, self.frame.size.height / 2);
+        //添加到场景
         [self addChild:self.player];
         //设置物理世界的重力感应为0
         self.physicsWorld.gravity = CGVectorMake(0, 0);
@@ -63,6 +66,7 @@ static inline CGPoint rwNormalize(CGPoint a) {
     return self;
 }
 - (void) addMonster {
+    //初始化monster对象
     SKSpriteNode *monster = [SKSpriteNode spriteNodeWithImageNamed:@"Monster"];
     //为monster创建一个对应的物体。此处，物体被定义为一个与monster相同尺寸的矩形
     monster.physicsBody = [SKPhysicsBody bodyWithRectangleOfSize:monster.size];
@@ -84,7 +88,7 @@ static inline CGPoint rwNormalize(CGPoint a) {
     //max - min
     int rangeY = maxY - minY;
     int actualY = (arc4random() % rangeY) + minY;
-    
+    //monster的初始位置
     monster.position = CGPointMake(self.frame.size.width + monster.size.width / 2, actualY);
     [self addChild:monster];
     //移动持续时间在2.0秒～4.0秒之间
@@ -97,9 +101,11 @@ static inline CGPoint rwNormalize(CGPoint a) {
     
     //如果一个monster逃走了，则你输了
     SKAction *loseAction = [SKAction runBlock:^{
-        SKTransition *reveal = [SKTransition flipHorizontalWithDuration:0.5];
-        //你输了
+        //切换场景方式
+        SKTransition *reveal = [SKTransition flipHorizontalWithDuration:1];
+        //你输了的场景
         SKScene *gameOverScene = [[GameOverScene alloc] initWithSize:self.size won:NO];
+        //切换场景
         [self.view presentScene:gameOverScene transition:reveal];
     }];
     
@@ -117,7 +123,7 @@ static inline CGPoint rwNormalize(CGPoint a) {
 //记录上次出现monster的时间间隔
 - (void) updateWithTimeSinceLastUpdate:(CFTimeInterval) timeSinceLast {
     self.lastSpawnTimeInterval += timeSinceLast;
-    //如果时间大于2秒，则再添加monster到视图中
+    //如果时间大于1秒，则再添加monster到视图中
     if (self.lastSpawnTimeInterval > 1) {
         self.lastSpawnTimeInterval = 0;
         [self addMonster];
@@ -191,6 +197,8 @@ static inline CGPoint rwNormalize(CGPoint a) {
 }
 //炮弹和monster碰撞时，处理的方法
 - (void) projectile:(SKSpriteNode *) projectile didCollideWithMonster: (SKSpriteNode *) monster {
+    //设置碰撞时的音效
+    //[self runAction:[SKAction playSoundFileNamed:@"pew-pew-lei.caf" waitForCompletion:NO]];
     NSLog(@"Hit");
     //碰撞时，将projectile和monster从场景中移除
     [projectile removeFromParent];
@@ -206,6 +214,7 @@ static inline CGPoint rwNormalize(CGPoint a) {
     }
     
 }
+//碰撞处理的代理是本场景
 - (void) didBeginContact:(SKPhysicsContact *)contact {
     SKPhysicsBody *firstBody, *secondBody;
     //将碰撞的对象分别赋给firstBody，secondBody
@@ -224,40 +233,4 @@ static inline CGPoint rwNormalize(CGPoint a) {
         [self projectile:(SKSpriteNode *) firstBody.node didCollideWithMonster:(SKSpriteNode *) secondBody.node];
     }
 }
-//-(void)didMoveToView:(SKView *)view {
-//    /* Setup your scene here */
-//    SKLabelNode *myLabel = [SKLabelNode labelNodeWithFontNamed:@"Chalkduster"];
-//    
-//    myLabel.text = @"Hello, World!";
-//    myLabel.fontSize = 65;
-//    myLabel.position = CGPointMake(CGRectGetMidX(self.frame),
-//                                   CGRectGetMidY(self.frame));
-//    
-//    [self addChild:myLabel];
-//}
-//
-//-(void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-//    /* Called when a touch begins */
-//    
-//    for (UITouch *touch in touches) {
-//        CGPoint location = [touch locationInNode:self];
-//        
-//        SKSpriteNode *sprite = [SKSpriteNode spriteNodeWithImageNamed:@"Spaceship"];
-//        
-//        sprite.xScale = 0.5;
-//        sprite.yScale = 0.5;
-//        sprite.position = location;
-//        
-//        SKAction *action = [SKAction rotateByAngle:M_PI duration:1];
-//        
-//        [sprite runAction:[SKAction repeatActionForever:action]];
-//        
-//        [self addChild:sprite];
-//    }
-//}
-//
-//-(void)update:(CFTimeInterval)currentTime {
-//    /* Called before each frame is rendered */
-//}
-
 @end

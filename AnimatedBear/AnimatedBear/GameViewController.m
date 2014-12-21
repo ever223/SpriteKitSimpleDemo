@@ -30,24 +30,25 @@
 
 @implementation GameViewController
 
+
 //- (void)viewDidLoad
 //{
 //    [super viewDidLoad];
-//
+//    
 //    // Configure the view.
 //    SKView * skView = (SKView *)self.view;
 //    skView.showsFPS = YES;
 //    skView.showsNodeCount = YES;
-//    /* Sprite Kit applies additional optimizations to improve rendering performance */
-//    skView.ignoresSiblingOrder = YES;
 //    
 //    // Create and configure the scene.
-//    GameScene *scene = [GameScene unarchiveFromFile:@"GameScene"];
+//    SKScene * scene = [GameScene sceneWithSize:skView.bounds.size];
 //    scene.scaleMode = SKSceneScaleModeAspectFill;
 //    
 //    // Present the scene.
 //    [skView presentScene:scene];
 //}
+
+//开启场景
 - (void) viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     SKView *skView = (SKView *) self.view;
